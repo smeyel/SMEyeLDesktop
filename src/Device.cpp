@@ -20,6 +20,12 @@
 using namespace std;
 
 
+
+Device::Device()
+		: host(""), port(0), name("Anonymous")
+{
+}
+
 Device::Device(const std::string& host, const int& port)
 		: host(host), port(port), name(host + ':' + to_string(port))
 {
@@ -28,6 +34,7 @@ Device::Device(const std::string& host, const int& port)
 Device::Device(const std::string& name, const std::string& host, const int& port)
 		: Device(host, port)
 {
+	this->name = name;
 }
 
 Device::~Device() {

@@ -11,6 +11,7 @@
 /* standard includes */
 #include <iostream>
 #include <map>
+#include <vector>
 
 /* C++11 includes */
 #include <memory> // shared_ptr
@@ -22,10 +23,19 @@
 #include "Connection.h"
 
 typedef std::map<std::string, std::shared_ptr<Connection> > ConnectionMap;
+typedef std::vector<std::string> Args;
+
+#define PROMPT "> "
 
 class SMEyeLDesktop {
 
 	ConnectionMap connections;
+
+	void prompt(std::string msg = "");
+	void print(std::string msg, bool newline = true);
+
+	void handle_connect(Args& args);
+	void handle_loglevel(Args& args);
 
 public:
 	SMEyeLDesktop();
@@ -34,7 +44,7 @@ public:
 	void run();
 
 	bool addDevice(const std::string& host, const int& port = 6000);
-//	bool addDevice(Device device);
+	bool addDevice(Device& device);
 };
 
 #endif /* SMEYELDESKTOP_H_ */

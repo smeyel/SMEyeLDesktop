@@ -16,7 +16,7 @@ using namespace std;
 Log::Levels Log::level = Log::Verbose;
 
 void Log::log(Levels level, string tag, string msg) {
-	if (level > Log::level) {
+	if (level >= Log::level) {
 		switch (level) {
 			case Verbose: 	cout << 'V'; break;
 			case Debug: 	cout << 'D'; break;

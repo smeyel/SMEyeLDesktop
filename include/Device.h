@@ -29,6 +29,7 @@ class Device {
 
 public:
 
+	Device();
 	Device(const std::string& host, const int& port = 6000);
 	Device(const std::string& name, const std::string& host, const int& port = 6000);
 	virtual ~Device();

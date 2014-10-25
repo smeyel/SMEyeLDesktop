@@ -28,6 +28,10 @@ public:
 		Log::level = level;
 	}
 
+	static Levels currentLevel() {
+		return Log::level;
+	}
+
 	static void log(Levels level, std::string tag, std::string msg);
 
 	static void v(std::string tag, std::string msg) { Log::log(Verbose, tag, msg); }
