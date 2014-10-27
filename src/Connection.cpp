@@ -45,4 +45,6 @@ bool Connection::connect() {
 	return connected;
 }
 
-
+void Connection::sendMessage(JsonMessage* msg, int socket) {
+	string json = msg->toString();
+}

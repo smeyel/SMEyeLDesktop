@@ -36,6 +36,7 @@ class SMEyeLDesktop {
 
 	void handle_connect(Args& args);
 	void handle_loglevel(Args& args);
+	void handle_takepicture(Args& args);
 
 public:
 	SMEyeLDesktop();

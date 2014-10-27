@@ -1,6 +1,6 @@
 CXX =		g++
 CC = 		$(CXX)
-CXXFLAGS =	-O3 -std=c++11 -pg -D_DEBUG -g -c -Wall $(INCLUDES)
+CXXFLAGS =	-O3 -std=c++11 -pg -D_DEBUG -g -c -Wall -Wno-unused-variable $(INCLUDES)
 
 INCLUDES = 	-I /home/akos/Programs/OpenCV/opencv-2.4.9/include \
 			-I ../Framework/libLogConfigTime/include/ \
@@ -14,8 +14,8 @@ LIBS =		-L/home/akos/Programs/OpenCV/opencv-2.4.9/build/lib \
 			-lopencv_imgproc \
 			-lopencv_features2d \
 			../Framework/libCommunication/libCommunication.a \
-			../Framework/libLogConfigTime/libLogConfigTime.a \
-			../Framework/libPlatformSpecifics/libPlatformSpecifics.a
+			../Framework/libPlatformSpecifics/libPlatformSpecifics.a \
+			../Framework/libLogConfigTime/libLogConfigTime.a 
 			
 			
 SRC = 		$(wildcard src/*.cpp)
