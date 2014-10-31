@@ -25,12 +25,15 @@
 								<option id="gnu.cpp.compiler.exe.debug.option.debugging.level.502045054" name="Debug Level" superClass="gnu.cpp.compiler.exe.debug.option.debugging.level" value="gnu.cpp.compiler.debugging.level.max" valueType="enumerated"/>
 								<option id="gnu.cpp.compiler.option.preprocessor.def.1453573806" name="Defined symbols (-D)" superClass="gnu.cpp.compiler.option.preprocessor.def" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="__cplusplus=201103L"/>
+									<listOptionValue builtIn="false" value="_DEBUG"/>
 								</option>
 								<option id="gnu.cpp.compiler.option.other.other.752836489" name="Other flags" superClass="gnu.cpp.compiler.option.other.other" value="-c -fmessage-length=0 -std=c++11 -Wno-unused-variable" valueType="string"/>
 								<option id="gnu.cpp.compiler.option.include.paths.615207055" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" valueType="includePath">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/include}&quot;"/>
+									<listOptionValue builtIn="false" value="/home/akos/Programs/OpenCV/opencv-2.4.9/include"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/Framework/libPlatformSpecifics/include}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/Framework/libCommunication/include}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/Framework/libLogConfigTime/include}&quot;"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.473080192" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 							</tool>
@@ -46,10 +49,10 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/Framework/libLogConfigTime/libLogConfigTime.a}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/Framework/libPlatformSpecifics/libPlatformSpecifics.a}&quot;"/>
 								</option>
-								<option id="gnu.cpp.link.option.paths.1593386349" superClass="gnu.cpp.link.option.paths" valueType="libPaths">
+								<option id="gnu.cpp.link.option.paths.423332416" name="Library search path (-L)" superClass="gnu.cpp.link.option.paths" valueType="libPaths">
 									<listOptionValue builtIn="false" value="/home/akos/Programs/OpenCV/opencv-2.4.9/build/lib"/>
 								</option>
-								<option id="gnu.cpp.link.option.libs.1830727138" superClass="gnu.cpp.link.option.libs" valueType="libs">
+								<option id="gnu.cpp.link.option.libs.164457504" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs" valueType="libs">
 									<listOptionValue builtIn="false" value="opencv_core"/>
 									<listOptionValue builtIn="false" value="opencv_highgui"/>
 									<listOptionValue builtIn="false" value="opencv_imgproc"/>

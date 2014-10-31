@@ -16,7 +16,6 @@
 #include <memory> // shared_ptr
 
 /* Framework includes */
-#include "JsonMessage.h"
 #include "TakePictureMessage.h"
 
 /* project includes */
@@ -60,7 +59,7 @@ void SMEyeLDesktop::run() {
 			handle_connect(args);
 		} else if (command == "loglevel") {
 			handle_loglevel(args);
-		} else if (command == "takepicture" || command == "tp") {
+		} else if (command == "tp" || command == "takepicture") {
 			handle_takepicture(args);
 		}
 	}
@@ -149,8 +148,7 @@ void SMEyeLDesktop::handle_takepicture(Args& args) {
 	}
 
 	shared_ptr<Connection> conn(connections[args[1]]);
-
-
+	conn->sendMessage(&msg);
 }
 
 bool SMEyeLDesktop::addDevice(Device& device) {

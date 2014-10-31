@@ -14,7 +14,7 @@
 /* C++11 includes */
 
 /* Framework includes */
-#include "JsonMessage.h"
+#include <JsonMessage.h>
 #include <PlatformSpecifics.h>
 
 /* project includes */
@@ -32,13 +32,11 @@ public:
 	Connection(Device& device);
 	virtual ~Connection();
 
-	void sendMessage(JsonMessage *msg, SOCKET socket);
-
+	void sendMessage(JsonMessage *msg);
 	bool isConnected() const { return connected; }
 
 	const Device& getDevice() const { return device; }
-
-	int getSocket() const { return socket; }
+	SOCKET getSocket() const { return socket; }
 };
 
 #endif /* CONNECTION_H_ */
