@@ -16,10 +16,13 @@
 #include <memory> // shared_ptr
 
 /* Framework includes */
+#include "TakePictureMessage.h"
 
 /* project includes */
 #include "Log.h"
 #include "Utils.h"
+
+
 
 
 using namespace std;
@@ -58,6 +61,8 @@ void SMEyeLDesktop::run() {
 			handle_connect(args);
 		} else if (command == "loglevel") {
 			handle_loglevel(args);
+		} else if (command == "tp" || command == "takepicture") {
+			handle_takepicture(args);
 		}
 	}
 }
@@ -107,12 +112,45 @@ void SMEyeLDesktop::handle_loglevel(Args& args) {
 			default:  level = Log::Verbose; break;
 		}
 		Log::setLevel(level);
-		print("Current log level is " + Log::currentLevel());
+		print("Current log level is ", false);
+		switch (Log::currentLevel()) {
+			case Log::Verbose: print("Verbose"); break;
+			case Log::Debug: print("Debug"); break;
+			case Log::Info: print("Info"); break;
+			case Log::Warning: print("Warning"); break;
+			case Log::Error: print("Error"); break;
+			case Log::Fatal: print("Fatal"); break;
+			default: print("UNSPECIFIED!!!"); break;
+		}
 
 	} else { // wrong argument list
-		print("Wrong argument list!\nUsage:\tloglevel (v|d|i|w|e|f)\n\t\tloglevel (V|D|I|W|E|F)\n\t\tloglevel 1-6");
+		print("Wrong argument list!\nUsage:\tloglevel (v|d|i|w|e|f)\n\tloglevel (V|D|I|W|E|F)");
 		return;
 	}
+}
+
+/**
+ * tp <device name> <dest filename> [<desired timestamp>]
+ */
+void SMEyeLDesktop::handle_takepicture(Args& args) {
+	if (args.size() < 3 || args.size() > 4) {
+		print("Wrong argument list!\nUsage:\ttp <device name> <dest filename> [<desired timestamp>]");
+		return;
+	}
+
+	TakePictureMessage msg;
+
+	if (args.size() == 4) {		// immediate picture request
+		msg.setDesiredTimestamp(std::atoll(args[2].c_str()));
+	}
+
+	if (! connections.count(args[1])) {
+		print("Unknown device name!");
+		return;
+	}
+
+	shared_ptr<Connection> conn(connections[args[1]]);
+	conn->sendMessage(&msg);
 }
 
 bool SMEyeLDesktop::addDevice(Device& device) {

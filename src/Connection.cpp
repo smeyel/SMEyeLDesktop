@@ -46,3 +46,16 @@ bool Connection::connect() {
 }
 
 
+void Connection::sendMessage(JsonMessage* msg) {
+	if (connected) {
+		string json = msg->toString(true);
+		int result = PlatformSpecifics::getInstance()->send(socket, json.c_str(), json.size(), 0);
+		if (result == json.size()) {
+			Log::v("Connection", "Message sent to " + device.getName());
+		} else {
+			Log::e("Conection", "Couldn't send message to " + device.getName() + "! Message: " + msg->toString());
+		}
+	} else {
+		Log::e("Conection", "Couldn't send message to " + device.getName() + "! Not connected!");
+	}
+}
