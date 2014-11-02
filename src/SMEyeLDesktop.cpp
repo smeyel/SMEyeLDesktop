@@ -11,11 +11,13 @@
 #include <iostream>
 #include <string>
 #include <algorithm>
+#include <opencv2/opencv.hpp>
 
 /* C++11 includes */
 #include <memory> // shared_ptr
 
 /* Framework includes */
+#include "JpegMessage.h"
 #include "TakePictureMessage.h"
 
 /* project includes */
@@ -33,6 +35,7 @@ SMEyeLDesktop::SMEyeLDesktop() {
 
 SMEyeLDesktop::~SMEyeLDesktop() {
 	// TODO Auto-generated destructor stub
+	delete displayThread;
 }
 
 void SMEyeLDesktop::run() {
@@ -155,8 +158,28 @@ void SMEyeLDesktop::handle_takepicture(Args& args) {
 	conn->sendMessage(&msg);
 }
 
+void showImage(shared_ptr<cv::Mat> image) {
+	cv::Mat local(*(image.get()));
+	const string winName= "Picture from phone";
+	cv::namedWindow(winName);
+	cv::imshow(winName, local);
+	cv::waitKey(0);
+	cv::destroyWindow(winName);
+}
+
+void SMEyeLDesktop::onMessageReceived(JsonMessagePtr msg) {
+	cout << "Received:" << endl << msg->toString() << endl;
+
+	shared_ptr<JpegMessage> jpegMsg = dynamic_pointer_cast<JpegMessage>(msg);
+	if (jpegMsg.get() != nullptr) {
+		shared_ptr<cv::Mat> image(new cv::Mat(480, 640, CV_8UC3));
+		jpegMsg->Decode(image.get());
+		displayThread = new std::thread(showImage, image);
+	}
+}
+
 bool SMEyeLDesktop::addDevice(Device& device) {
-	auto c = shared_ptr<Connection>(new Connection(device));
+	auto c = shared_ptr<Connection>(new Connection(device, this));
 	connections.insert(ConnectionMap::value_type(c->getDevice().getName(), c));
 
 	return c->isConnected();
