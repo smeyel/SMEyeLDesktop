@@ -42,6 +42,10 @@ void SMEyeLDesktop::run() {
 		prompt();
 		string input;
 		std::getline(cin, input);
+		if (cin.eof()) {
+			print("Goodbye!");
+			break;
+		}
 
 		Args args = Utils::split(input);
 
