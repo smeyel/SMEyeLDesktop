@@ -38,11 +38,12 @@ class SMEyeLDesktop : OnMessageReceivedListener {
 	std::thread* displayThread;
 
 	void prompt(std::string msg = "");
-	void print(std::string msg, bool newline = true);
+	void print(std::string msg = "", bool newline = true);
 
 	void handle_connect(Args& args);
 	void handle_loglevel(Args& args);
 	void handle_takepicture(Args& args);
+	void handle_listdevices(Args& args);
 
 
 public:

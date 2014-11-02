@@ -68,6 +68,8 @@ void SMEyeLDesktop::run() {
 			handle_loglevel(args);
 		} else if (command == "tp" || command == "takepicture") {
 			handle_takepicture(args);
+		} else if (command == "ls" || command == "listdevices") {
+			handle_listdevices(args);
 		}
 	}
 }
@@ -158,13 +160,25 @@ void SMEyeLDesktop::handle_takepicture(Args& args) {
 	conn->sendMessage(&msg);
 }
 
+void SMEyeLDesktop::handle_listdevices(Args& args) {
+	print("Connected devices:");
+	for (auto & c : connections) {
+		if (c.second->isConnected()) {
+			print(c.second->getDevice());
+		}
+	}
+}
+
 void showImage(shared_ptr<cv::Mat> image) {
+	stringstream ss;
+	ss << std::this_thread::get_id();
+	Log::d("SMEyeLDesktop", "Showing image on thread " + ss.str());
 	cv::Mat local(*(image.get()));
 	const string winName= "Picture from phone";
 	cv::namedWindow(winName);
 	cv::imshow(winName, local);
 	cv::waitKey(0);
-	cv::destroyWindow(winName);
+//	cv::destroyWindow(winName);
 }
 
 void SMEyeLDesktop::onMessageReceived(JsonMessagePtr msg) {
