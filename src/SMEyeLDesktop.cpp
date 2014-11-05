@@ -70,6 +70,8 @@ void SMEyeLDesktop::run() {
 			handle_takepicture(args);
 		} else if (command == "ls" || command == "listdevices") {
 			handle_listdevices(args);
+		} else if (command == "ts") {
+			handle_ts_findLed(args);
 		}
 	}
 }
@@ -157,7 +159,7 @@ void SMEyeLDesktop::handle_takepicture(Args& args) {
 	}
 
 	shared_ptr<Connection> conn(connections[args[1]]);
-	conn->sendMessage(&msg);
+	conn->sendMessage(&msg, std::function<void(JsonMessagePtr)>());
 }
 
 void SMEyeLDesktop::handle_listdevices(Args& args) {
@@ -179,6 +181,39 @@ void showImage(shared_ptr<cv::Mat> image) {
 	cv::imshow(winName, local);
 	cv::waitKey(0);
 //	cv::destroyWindow(winName);
+}
+
+void SMEyeLDesktop::processFindled(JsonMessagePtr msg) {
+	cout << "processing findled" << endl;
+	shared_ptr<JpegMessage> jpegMsg = dynamic_pointer_cast<JpegMessage>(msg);
+	if (jpegMsg.get() != nullptr) {
+		shared_ptr<cv::Mat> rgb(new cv::Mat(480, 640, CV_8UC3));
+		jpegMsg->Decode(rgb.get());
+
+		shared_ptr<cv::Mat> gray(new cv::Mat(480, 640, CV_8UC3));
+		cv::cvtColor(*(rgb.get()), *(gray.get()), CV_RGB2GRAY );
+
+		cv::threshold(*(gray.get()), *(gray.get()), 125, 255, 0);
+
+		displayThread = new std::thread(showImage, gray);
+	}
+}
+
+
+/**
+ * ts <device>
+ */
+void SMEyeLDesktop::handle_ts_findLed(Args& args) {
+	TakePictureMessage msg;
+
+	if (! connections.count(args[1])) {
+		print("Unknown device name!");
+		return;
+	}
+
+	shared_ptr<Connection> conn(connections[args[1]]);
+	using std::placeholders::_1;
+	conn->sendMessage(&msg, bind(&SMEyeLDesktop::processFindled, this, _1));
 }
 
 void SMEyeLDesktop::onMessageReceived(JsonMessagePtr msg) {

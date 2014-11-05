@@ -39,14 +39,14 @@ class Connection {
 
 	bool connect();
 
-	void receive();
+	void receive(std::function<void(JsonMessagePtr)> callback);
 
 
 public:
 	Connection(Device& device, OnMessageReceivedListener* callback);
 	virtual ~Connection();
 
-	void sendMessage(JsonMessage *msg);
+	void sendMessage(JsonMessage *msg, std::function<void(JsonMessagePtr)> callback);
 	bool isConnected() const { return connected; }
 
 	const Device& getDevice() const { return device; }

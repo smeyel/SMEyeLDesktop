@@ -44,6 +44,9 @@ class SMEyeLDesktop : OnMessageReceivedListener {
 	void handle_loglevel(Args& args);
 	void handle_takepicture(Args& args);
 	void handle_listdevices(Args& args);
+	void handle_ts_findLed(Args& args);
+
+	void processFindled(JsonMessagePtr msg);
 
 
 public:
