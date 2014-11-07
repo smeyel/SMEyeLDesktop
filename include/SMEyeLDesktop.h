@@ -20,6 +20,7 @@
 /* Framework includes */
 #include <PlatformSpecifics.h>
 #include <JsonMessage.h>
+#include "LaserPointerTracker.h"
 
 /* project includes */
 #include "Connection.h"
@@ -36,6 +37,8 @@ class SMEyeLDesktop : OnMessageReceivedListener {
 	ConnectionMap connections;
 
 	std::thread* displayThread;
+
+	LaserPointerTracker tracker;
 
 	void prompt(std::string msg = "");
 	void print(std::string msg = "", bool newline = true);

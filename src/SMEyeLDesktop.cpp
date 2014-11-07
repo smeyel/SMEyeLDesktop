@@ -12,6 +12,7 @@
 #include <string>
 #include <algorithm>
 #include <opencv2/opencv.hpp>
+#include <opencv2/imgproc/imgproc.hpp>
 
 /* C++11 includes */
 #include <memory> // shared_ptr
@@ -29,8 +30,7 @@ using namespace std;
 
 
 SMEyeLDesktop::SMEyeLDesktop() {
-	// TODO Auto-generated constructor stub
-
+	tracker.init("tracker.ini");
 }
 
 SMEyeLDesktop::~SMEyeLDesktop() {
@@ -184,18 +184,26 @@ void showImage(shared_ptr<cv::Mat> image) {
 }
 
 void SMEyeLDesktop::processFindled(JsonMessagePtr msg) {
+	using namespace cv;
+
 	cout << "processing findled" << endl;
 	shared_ptr<JpegMessage> jpegMsg = dynamic_pointer_cast<JpegMessage>(msg);
 	if (jpegMsg.get() != nullptr) {
 		shared_ptr<cv::Mat> rgb(new cv::Mat(480, 640, CV_8UC3));
 		jpegMsg->Decode(rgb.get());
 
-		shared_ptr<cv::Mat> gray(new cv::Mat(480, 640, CV_8UC3));
-		cv::cvtColor(*(rgb.get()), *(gray.get()), CV_RGB2GRAY );
 
-		cv::threshold(*(gray.get()), *(gray.get()), 125, 255, 0);
+		tracker.processFrame(*(rgb.get()));
 
-		displayThread = new std::thread(showImage, gray);
+		Point2i led = tracker.getLastPoint();
+
+		Log::d("processfindled", "Point is (" + std::to_string(led.x) + "," + std::to_string(led.y) + ")");
+
+		circle(*(rgb.get()), led, 20, Scalar(255, 0, 0), 2, 8, 0);
+
+		displayThread = new std::thread(showImage, rgb);
+
+
 	}
 }
 

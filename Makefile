@@ -7,13 +7,17 @@ INCLUDES = 	\
 			-I /home/akos/Programs/OpenCV/opencv-2.4.9/include \
 			-I ../Framework/libLogConfigTime/include/ \
 			-I ../Framework/libPlatformSpecifics/include/ \
-			-I ../Framework/libCommunication/include/
+			-I ../Framework/libCommunication/include/ \
+			-I ../Tracking/lib3dWorld/include/ \
+			-I ../M3Dev/M3Host/include/
+			
 
 LIBS =		\
 			-L/home/akos/Programs/OpenCV/opencv-2.4.9/build/lib \
 			../Framework/libCommunication/libCommunication.a \
 			../Framework/libLogConfigTime/libLogConfigTime.a \
 			../Framework/libPlatformSpecifics/libPlatformSpecifics.a \
+			../Tracking/lib3dWorld/lib3dWorld.a \
 			-lopencv_core \
 			-lopencv_highgui \
 			-lopencv_imgproc \
