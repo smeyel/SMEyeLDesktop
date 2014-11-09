@@ -29,12 +29,12 @@ using namespace std;
 
 
 SMEyeLDesktop::SMEyeLDesktop() {
-	// TODO Auto-generated constructor stub
-
+	displayThread = new std::thread(std::bind(&ImageHelper::run, &imageHelper));
 }
 
 SMEyeLDesktop::~SMEyeLDesktop() {
-	// TODO Auto-generated destructor stub
+	imageHelper.terminate();
+	displayThread->join();
 	delete displayThread;
 }
 
@@ -169,18 +169,6 @@ void SMEyeLDesktop::handle_listdevices(Args& args) {
 	}
 }
 
-void showImage(shared_ptr<cv::Mat> image) {
-	stringstream ss;
-	ss << std::this_thread::get_id();
-	Log::d("SMEyeLDesktop", "Showing image on thread " + ss.str());
-	cv::Mat local(*(image.get()));
-	const string winName= "Picture from phone";
-	cv::namedWindow(winName);
-	cv::imshow(winName, local);
-	cv::waitKey(0);
-//	cv::destroyWindow(winName);
-}
-
 void SMEyeLDesktop::onMessageReceived(JsonMessagePtr msg) {
 	cout << "Received:" << endl << msg->toString() << endl;
 
@@ -188,7 +176,7 @@ void SMEyeLDesktop::onMessageReceived(JsonMessagePtr msg) {
 	if (jpegMsg.get() != nullptr) {
 		shared_ptr<cv::Mat> image(new cv::Mat(480, 640, CV_8UC3));
 		jpegMsg->Decode(image.get());
-		displayThread = new std::thread(showImage, image);
+		imageHelper.show(*(image.get()));
 	}
 }
 
