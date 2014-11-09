@@ -24,6 +24,7 @@
 
 /* project includes */
 #include "Connection.h"
+#include "ImageHelper.h"
 #include "OnMessageReceivedListener.h"
 #include "Typedefs.h"
 
@@ -38,7 +39,9 @@ class SMEyeLDesktop : OnMessageReceivedListener {
 
 	std::thread* displayThread;
 
+
 	LaserPointerTracker tracker;
+	ImageHelper imageHelper;
 
 	void prompt(std::string msg = "");
 	void print(std::string msg = "", bool newline = true);

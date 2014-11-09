@@ -31,10 +31,13 @@ using namespace std;
 
 SMEyeLDesktop::SMEyeLDesktop() {
 	tracker.init("tracker.ini");
+
+	displayThread = new std::thread(std::bind(&ImageHelper::run, &imageHelper));
 }
 
 SMEyeLDesktop::~SMEyeLDesktop() {
-	// TODO Auto-generated destructor stub
+	imageHelper.terminate();
+	displayThread->join();
 	delete displayThread;
 }
 
@@ -171,18 +174,6 @@ void SMEyeLDesktop::handle_listdevices(Args& args) {
 	}
 }
 
-void showImage(shared_ptr<cv::Mat> image) {
-	stringstream ss;
-	ss << std::this_thread::get_id();
-	Log::d("SMEyeLDesktop", "Showing image on thread " + ss.str());
-	cv::Mat local(*(image.get()));
-	const string winName= "Picture from phone";
-	cv::namedWindow(winName);
-	cv::imshow(winName, local);
-	cv::waitKey(0);
-//	cv::destroyWindow(winName);
-}
-
 void SMEyeLDesktop::processFindled(JsonMessagePtr msg) {
 	using namespace cv;
 
@@ -201,7 +192,7 @@ void SMEyeLDesktop::processFindled(JsonMessagePtr msg) {
 
 		circle(*(rgb.get()), led, 20, Scalar(255, 0, 0), 2, 8, 0);
 
-		displayThread = new std::thread(showImage, rgb);
+		imageHelper.show(*(rgb.get()));
 
 
 	}
@@ -223,7 +214,6 @@ void SMEyeLDesktop::handle_ts_findLed(Args& args) {
 	using std::placeholders::_1;
 	conn->sendMessage(&msg, bind(&SMEyeLDesktop::processFindled, this, _1));
 }
-
 void SMEyeLDesktop::onMessageReceived(JsonMessagePtr msg) {
 	cout << "Received:" << endl << msg->toString() << endl;
 
@@ -231,7 +221,7 @@ void SMEyeLDesktop::onMessageReceived(JsonMessagePtr msg) {
 	if (jpegMsg.get() != nullptr) {
 		shared_ptr<cv::Mat> image(new cv::Mat(480, 640, CV_8UC3));
 		jpegMsg->Decode(image.get());
-		displayThread = new std::thread(showImage, image);
+		imageHelper.show(*(image.get()));
 	}
 }
 
