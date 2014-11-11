@@ -67,6 +67,8 @@ void SMEyeLDesktop::run() {
 			break;
 		} else if (command == "connect") {
 			handle_connect(args);
+		} else if (command == "disconnect") {
+			handle_disconnect(args);
 		} else if (command == "loglevel") {
 			handle_loglevel(args);
 		} else if (command == "tp" || command == "takepicture") {
@@ -75,6 +77,8 @@ void SMEyeLDesktop::run() {
 			handle_listdevices(args);
 		} else if (command == "ts") {
 			handle_ts_findLed(args);
+		} else {
+			print("Unrecognized command. Type 'help' for the list of commands!");
 		}
 	}
 }
@@ -105,6 +109,21 @@ void SMEyeLDesktop::handle_connect(Args& args) {
 	}
 
 	addDevice(d);
+}
+
+void SMEyeLDesktop::handle_disconnect(Args& args) {
+	auto it = connections.find(args[1]);
+
+	if (it == connections.end()) {
+		Log::d("SMEyeLDesktop", "Device not found, can't disconnect.");
+		return;
+	}
+
+	if (it->second->isConnected()) {
+		Log::d("SMEyeLDesktop", "Device is connected, disconnecting.");
+	}
+
+	connections.erase(it);
 }
 
 void SMEyeLDesktop::handle_loglevel(Args& args) {

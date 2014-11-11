@@ -47,6 +47,7 @@ class SMEyeLDesktop : OnMessageReceivedListener {
 	void print(std::string msg = "", bool newline = true);
 
 	void handle_connect(Args& args);
+	void handle_disconnect(Args& args);
 	void handle_loglevel(Args& args);
 	void handle_takepicture(Args& args);
 	void handle_listdevices(Args& args);
