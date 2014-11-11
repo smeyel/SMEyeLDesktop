@@ -37,11 +37,8 @@ class SMEyeLDesktop : OnMessageReceivedListener {
 
 	ConnectionMap connections;
 
-	std::thread* displayThread;
-
 
 	LaserPointerTracker tracker;
-	ImageHelper imageHelper;
 
 	void prompt(std::string msg = "");
 	void print(std::string msg = "", bool newline = true);

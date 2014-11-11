@@ -1,6 +1,8 @@
 #include "LaserPointerTracker.h"
 #include "TrackerConfigManager.h"
 
+#include "ImageHelper.h"
+
 using namespace cv;
 
 	LaserPointerTracker::LaserPointerTracker() {
@@ -33,8 +35,8 @@ using namespace cv;
 		putText(img, sout3.str(), Point(5, 75), FONT_HERSHEY_SIMPLEX, 0.4, Scalar(0, 255, 0));
 
 		//TODO: only the last camera's pictures shows, becouse the windows have the same name. Should use cameraID or else.
-		imshow("img", img);
-		imshow("bw", filtered);
+		ImageHelper::get("Original")->show(img);
+		ImageHelper::get("Filtered")->show(filtered);
 	}
 
 

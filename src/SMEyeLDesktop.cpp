@@ -28,17 +28,17 @@
 
 using namespace std;
 
+const std::string mainWinName = "Main image";
+
 
 SMEyeLDesktop::SMEyeLDesktop() {
 	tracker.init("tracker.ini");
 
-	displayThread = new std::thread(std::bind(&ImageHelper::run, &imageHelper));
+	ImageHelper::init(mainWinName);
 }
 
 SMEyeLDesktop::~SMEyeLDesktop() {
-	imageHelper.terminate();
-	displayThread->join();
-	delete displayThread;
+	ImageHelper::dispose();
 }
 
 void SMEyeLDesktop::run() {
@@ -211,7 +211,7 @@ void SMEyeLDesktop::processFindled(JsonMessagePtr msg) {
 
 		circle(*(rgb.get()), led, 20, Scalar(255, 0, 0), 2, 8, 0);
 
-		imageHelper.show(*(rgb.get()));
+		ImageHelper::get(mainWinName)->show(*(rgb.get()));
 
 
 	}
@@ -240,7 +240,7 @@ void SMEyeLDesktop::onMessageReceived(JsonMessagePtr msg) {
 	if (jpegMsg.get() != nullptr) {
 		shared_ptr<cv::Mat> image(new cv::Mat(480, 640, CV_8UC3));
 		jpegMsg->Decode(image.get());
-		imageHelper.show(*(image.get()));
+		ImageHelper::get(mainWinName)->show(*(image.get()));
 	}
 }
 
