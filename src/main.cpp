@@ -25,6 +25,6 @@ int main() {
 	SMEyeLDesktop app;
 	app.run();
 
-//	app.addDevice("192.168.1.107");
+	return 0;
 }
 

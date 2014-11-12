@@ -22,50 +22,40 @@
 
 /* project includes */
 
-
 class ImageHelper;
 
 typedef std::shared_ptr<ImageHelper> ImageHelperPtr;
-typedef std::shared_ptr<std::thread> ThreadPtr;
 
-struct DisplayThread {
-	std::string winName;
-	ImageHelperPtr instance;
-	ThreadPtr thread;
-
-	~DisplayThread();
-};
 
 class ImageHelper {
-	static std::map<std::string, std::shared_ptr<DisplayThread>> threads;
+
+	static ImageHelperPtr instance;
 
 	bool terminated;
 	bool isChanged;
 
-	const std::string winName;
-
-	cv::Mat image;
+	std::thread* thread;
 
 	std::mutex imageLock;
 	std::condition_variable imageCV;
 
+	std::map<std::string, std::shared_ptr<cv::Mat>> images;
 
-
-	ImageHelper(const std::string& winName);
+	ImageHelper();
 	ImageHelper(ImageHelper&) = delete;
 	ImageHelper(ImageHelper&&) = delete;
 
+	~ImageHelper();
+
 public:
 
-	static ImageHelperPtr init(const std::string& winName);
-	static ImageHelperPtr get(const std::string& winName);
-	static void dispose(const std::string& winName);
-
+	static ImageHelperPtr get();
 	static void dispose();
+
 
 	void run();
 
-	void show(cv::Mat& image);
+	void show(cv::Mat& image, const std::string& winName);
 
 	void terminate();
 };
