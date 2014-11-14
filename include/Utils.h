@@ -27,6 +27,4 @@ void split(const std::string& str, std::vector<std::string>& tokens, const std::
 
 }  // namespace Utils
 
-
-
 #endif /* UTILS_H_ */

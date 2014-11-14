@@ -18,6 +18,12 @@
 
 /* project includes */
 
+
+/**
+ * Represents a device that can be connected to.
+ * A device has an optional name, a mandatory address (IP) and
+ * a mandatory port on which it is listening.
+ */
 class Device {
 
 	friend std::ostream& operator<<(std::ostream& o, const Device& dev);

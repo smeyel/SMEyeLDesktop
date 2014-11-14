@@ -73,7 +73,9 @@ void Connection::receive(function<void(JsonMessagePtr)> callback) {
 			callback(msg);
 		} else {
 			// Callback is empty, use instance-level callback
-			this->callback->onMessageReceived(msg);
+			if (this->callback != nullptr) {
+				this->callback->onMessageReceived(msg);
+			}
 		}
 
 	} else {

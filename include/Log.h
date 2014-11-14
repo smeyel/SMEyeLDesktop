@@ -11,7 +11,11 @@
 #include <iostream>
 #include <string>
 
-
+/**
+ * Simple logging class using the common logging levels.
+ * Easy to use, all-static implementation.
+ * Just call Log::x(TAG, MESSAGE); where 'x' is the first character of the desired loglevel.
+ */
 class Log {
 
 public:
@@ -24,6 +28,10 @@ public:
 		Fatal
 	};
 
+	/**
+	 * After this call, only events having a loglevel greater
+	 * or equal to 'level' will be printed.
+	 */
 	static void setLevel(Levels level) {
 		Log::level = level;
 	}

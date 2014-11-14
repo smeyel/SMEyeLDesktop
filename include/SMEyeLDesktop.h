@@ -33,8 +33,12 @@ typedef std::vector<std::string> Args;
 
 #define PROMPT "> "
 
+/**
+ * The main program that operates a command prompt and handles the commands.
+ */
 class SMEyeLDesktop : OnMessageReceivedListener {
 
+	/** The active connections, indexed with the name of the device. */
 	ConnectionMap connections;
 
 
