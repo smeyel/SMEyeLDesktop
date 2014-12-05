@@ -11,6 +11,8 @@ using namespace cv;
 	failCntTooManyPoints = 0;
 
 	tooManyPoints = false;
+
+	showWindows = false;
 }
 	ObjectsToMatch* LaserPointerTracker::getObjectsToMatch()
 	{
@@ -55,18 +57,22 @@ using namespace cv;
 		}
 	
 		split(img, channels);
+		if (showWindows) ImageHelper::get()->show(img, "Red");
 		blur(channels[color], channels[color], Size(2, 2));
+		if (showWindows) ImageHelper::get()->show(channels[color], "Blurred");
 
 		
 		//weighted averaging: avg = 0.9*old_avg + 0.1*new
-		addWeighted(averaging, 0.9, channels[color], 0.1, 0, averaging);
+//		addWeighted(averaging, 0.9, channels[color], 0.1, 0, averaging);
 	
 		//background subtraction + tresholding
 		//addWeighted(channels[color], 1, averaging, -1, -detectionParameters.lowerTreshold, frameout);
 		addWeighted(channels[color], 1, averaging, -1, -configManager.lowerTreshold, frameout);
+		if (showWindows) ImageHelper::get()->show(frameout, "No background");
 
 		//increase contrast
 		frameout.convertTo(frameout, -1, 100, 0);
+		if (showWindows) ImageHelper::get()->show(frameout, "High contrast");
 
 		
 		vector<vector<Point>> contours;
@@ -101,9 +107,11 @@ using namespace cv;
 		Point2i mostIntense = largestIntensityPoint(newFoundPoints, channels[color]);
 
 		
-			lastPoint = newPoint(closest, mostIntense);
-		
-		addWindowsAndCounters(frameout, img);
+		lastPoint = newPoint(closest, mostIntense);
+
+		if (showWindows) {
+			addWindowsAndCounters(frameout, img);
+		}
 	};
 
 	Point2i LaserPointerTracker::getLastPoint(){
@@ -203,4 +211,8 @@ using namespace cv;
 
 	LaserPointerTracker::~LaserPointerTracker() {
 }
+
+	void LaserPointerTracker::reset() {
+		lastPoint = Point2i(0, 0);
+	}
 

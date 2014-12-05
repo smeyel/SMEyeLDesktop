@@ -31,6 +31,8 @@ class LaserPointerTracker : public ObjectTracker{
 
 	bool tooManyPoints;
 
+	bool showWindows;
+
 
 
 public:
@@ -77,6 +79,16 @@ public:
 	void drawOnImage(Mat&,string);
 
 	virtual ~LaserPointerTracker();
+
+	bool isShowWindows() const {
+		return showWindows;
+	}
+
+	void setShowWindows(bool showWindows) {
+		this->showWindows = showWindows;
+	}
+
+	void reset();
 };
 
 #endif /* LASERPOINTERTRACKER_H_ */

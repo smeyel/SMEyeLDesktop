@@ -13,6 +13,7 @@
 #include <algorithm>
 #include <opencv2/opencv.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
+#include <opencv2/highgui/highgui.hpp>
 
 /* C++11 includes */
 #include <memory> // shared_ptr
@@ -20,8 +21,11 @@
 /* Framework includes */
 #include "JpegMessage.h"
 #include "TakePictureMessage.h"
+#include "TimesyncRequestMessage.h"
+#include "TimesyncResponseMessage.h"
 
 /* project includes */
+#include "LedFinderConfigManager.h"
 #include "Log.h"
 #include "Utils.h"
 
@@ -29,6 +33,8 @@
 using namespace std;
 
 const std::string mainWinName = "Main image";
+
+const std::string TAG = "SMEyeLDesktop";
 
 
 SMEyeLDesktop::SMEyeLDesktop() {
@@ -74,7 +80,11 @@ void SMEyeLDesktop::run() {
 		} else if (command == "ls" || command == "listdevices") {
 			handle_listdevices(args);
 		} else if (command == "ts") {
+			handle_ts(args);
+		} else if (command == "tsf") {
 			handle_ts_findLed(args);
+		} else if (command == "pv") {
+			handle_process_video(args);
 		} else {
 			print("Unrecognized command. Type 'help' for the list of commands!");
 		}
@@ -210,8 +220,6 @@ void SMEyeLDesktop::processFindled(JsonMessagePtr msg) {
 		circle(*(rgb.get()), led, 20, Scalar(255, 0, 0), 2, 8, 0);
 
 		ImageHelper::get()->show(*(rgb.get()), mainWinName);
-
-
 	}
 }
 
@@ -231,6 +239,78 @@ void SMEyeLDesktop::handle_ts_findLed(Args& args) {
 	using std::placeholders::_1;
 	conn->sendMessage(&msg, bind(&SMEyeLDesktop::processFindled, this, _1));
 }
+
+void SMEyeLDesktop::handle_process_video(Args& args) {
+	if (args.size() != 2) {
+		print("Wrong argument list!\nUsage:\tpv <filename>");
+		return;
+	}
+
+	LaserPointerTracker tracker;
+	tracker.init("tracker.ini");
+	tracker.setShowWindows(false);
+
+	cv::VideoCapture capturer(args[1]);
+	cv::Mat frame;
+
+	std::vector<int> status;
+	bool isStarted = false;
+
+	while (capturer.read(frame)) {
+		tracker.reset();
+		tracker.processFrame(frame);
+		tracker.processFrame(frame);
+
+		Point2i last = tracker.getLastPoint();
+
+		if (!isStarted && last != Point2i(0, 0)) {
+			isStarted = true;
+		}
+
+		if (isStarted) {
+			if (last == Point2i(0, 0)) {
+				status.push_back(0);
+			} else {
+				status.push_back(1);
+			}
+		}
+
+//		Log::d("ProcessVideo", "(" + std::to_string(last.x) + "," + std::to_string(last.y) + ")");
+	}
+
+	stringstream ss;
+	for (auto& it : status) {
+		ss << it << " ";
+	}
+
+	Log::d("ProcessVideo", ss.str());
+}
+
+void SMEyeLDesktop::handle_ts(Args& args) {
+	TimesyncRequestMessage msg;
+
+	if (! connections.count(args[1])) {
+		print("Unknown device name!");
+		return;
+	}
+
+	shared_ptr<Connection> conn(connections[args[1]]);
+	using std::placeholders::_1;
+	conn->sendMessage(&msg, bind(&SMEyeLDesktop::processTimesyncResponse, this, _1));
+}
+
+void SMEyeLDesktop::processTimesyncResponse(JsonMessagePtr msg) {
+	shared_ptr<TimesyncResponseMessage> tsMsg = dynamic_pointer_cast<TimesyncResponseMessage>(msg);
+	if (tsMsg.get() != nullptr) {
+		stringstream ss;
+		for (auto& it : tsMsg->getValues()) {
+			ss << it.brightness << "@" << it.timestamp << " ";
+		}
+
+		Log::d("ProcessTimesync", ss.str());
+	}
+}
+
 void SMEyeLDesktop::onMessageReceived(JsonMessagePtr msg) {
 	cout << "Received:" << endl << msg->toString() << endl;
 
