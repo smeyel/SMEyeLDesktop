@@ -25,7 +25,6 @@
 #include "TimesyncResponseMessage.h"
 
 /* project includes */
-#include "LedFinderConfigManager.h"
 #include "Log.h"
 #include "Utils.h"
 
@@ -286,6 +285,10 @@ void SMEyeLDesktop::handle_process_video(Args& args) {
 	Log::d("ProcessVideo", ss.str());
 }
 
+/**
+ * Command handler for time synchronization. Sends a TimesyncRequestMessage
+ * to the device found in args, or emits a warning if no device is found.
+ */
 void SMEyeLDesktop::handle_ts(Args& args) {
 	TimesyncRequestMessage msg;
 
@@ -299,6 +302,10 @@ void SMEyeLDesktop::handle_ts(Args& args) {
 	conn->sendMessage(&msg, bind(&SMEyeLDesktop::processTimesyncResponse, this, _1));
 }
 
+/**
+ * Processes the time synchronization response message. Iterates over the
+ * received brightness-timestamp pairs and prints them to stdout.
+ */
 void SMEyeLDesktop::processTimesyncResponse(JsonMessagePtr msg) {
 	shared_ptr<TimesyncResponseMessage> tsMsg = dynamic_pointer_cast<TimesyncResponseMessage>(msg);
 	if (tsMsg.get() != nullptr) {
